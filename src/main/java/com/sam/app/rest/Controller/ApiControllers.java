@@ -42,4 +42,9 @@ public class ApiControllers {
         userRepo.delete(deleteUser);
         return "deleted...";
     }
+
+    @PostMapping(value = "/addUser")
+    public boolean addUser(@RequestBody User user) {
+        return userRepo.addUser(user.getAge(), user.getFirstName(), user.getLastName(), user.getOccupation());
+    }
 }
