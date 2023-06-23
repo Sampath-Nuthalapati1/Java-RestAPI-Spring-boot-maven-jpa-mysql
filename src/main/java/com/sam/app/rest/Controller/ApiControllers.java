@@ -2,6 +2,7 @@ package com.sam.app.rest.Controller;
 
 import com.sam.app.rest.Models.User;
 import com.sam.app.rest.Repo.UserRepo;
+import com.sam.app.rest.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,41 +11,33 @@ import java.util.List;
 @RestController
 public class ApiControllers {
     @Autowired
-    private UserRepo userRepo;
+    private UserService userService;
     @GetMapping(value = "/")
     public String getPage() {
         return "Welcome";
     }
     @GetMapping(value = "/users")
     public List<User> getUsers() {
-        return userRepo.findAll();
-    }
-    @PostMapping(value = "/saveUser")
-    public String saveUser(@RequestBody User user) {
-        userRepo.save(user);
-        return "saved...";
+        return userService.getUsers();
     }
 
-    @PutMapping(value = "/update/{id}")
+    @PostMapping(value = "/saveUser")
+    public String saveUser(@RequestBody User user) {
+        return userService.saveUser(user);
+    }
+
+    @PutMapping(value = "update/{id}")
     public String updateUser(@RequestBody User user, @PathVariable long id) {
-        User updateUser = userRepo.findById(id).get();
-        updateUser.setFirstName(user.getFirstName());
-        updateUser.setLastName(user.getLastName());
-        updateUser.setOccupation(user.getOccupation());
-        updateUser.setAge(user.getAge());
-        userRepo.save(updateUser);
-        return "updated...";
+        return userService.updateUser(user, id);
     }
 
     @DeleteMapping(value = "delete/{id}")
     public String deleteUser(@PathVariable long id) {
-        User deleteUser = userRepo.findById(id).get();
-        userRepo.delete(deleteUser);
-        return "deleted...";
+        return userService.deleteUser(id);
     }
 
     @PostMapping(value = "/addUser")
     public boolean addUser(@RequestBody User user) {
-        return userRepo.addUser(user.getAge(), user.getFirstName(), user.getLastName(), user.getOccupation());
+        return userService.addUser(user);
     }
 }
